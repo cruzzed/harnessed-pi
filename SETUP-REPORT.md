@@ -131,3 +131,59 @@ pi-web's own docs: it is not a sandbox or permission system.
   it's why the localhost bind matters.
 - The web image is a local fork layer; `mise run pi:upgrade` upgrades the base
   image only — rebuild with `mise run pi:web-build` afterwards.
+
+---
+
+# Addendum 2: multi-agent coordination + versioned soul — 2026-09-11
+
+## Git baselines (before this round, everything was uncommitted)
+
+- `~/pi-less-yolo` — local changes on branch `local` (main still tracks upstream;
+  `mise run update`/git-pull on main, then merge/rebase `local`).
+- `~/piagent` — new repo, all harness files committed. NOTE: contains a nested
+  `pi-less-yolo/` clone (created during pi-web work) — inert, gitignored,
+  safe to delete; the live one is `~/pi-less-yolo`.
+- `~/.pi/agent` — new repo, "soul only": extensions, AGENTS.md, settings.
+  Sessions/npm-global/auth gitignored.
+
+## Write-lock + vicinity (safety-gate v2)
+
+`safety-gate.ts` now adds, on top of the original policy:
+
+- **`.pi-writelock/`** (dir in the worktree): single-writer lock. `write`/`edit`
+  blocked while a *fresh* (TTL 30 min) foreign lock is held; first write with
+  peers present auto-acquires (atomic mkdir). `/writelock acquire|release|status`.
+- **`.pi-agents/<instance-id>`** heartbeat registry: written on every `context`
+  event; peers fresher than 2 min count as present. When peers exist, a
+  one-paragraph nudge is injected into the next LLM call (max once per 5 min):
+  write via gated tools only, don't bash-write.
+- **Vicinity-conditional bash heuristics**: while another instance holds the
+  lock, bash commands matching `>`, `>>`, `tee`, `sed -i`, `cp`, `mv` are
+  blocked. HEURISTIC — catches the forgetful, not the adversarial; physical
+  enforcement remains the container + optional `:ro` mounts.
+- Instance identity comes from `PI_INSTANCE_ID` (new `_docker_flags`
+  passthrough, also applied as container label). New passthroughs:
+  `PI_LABELS` (comma-separated k=v → `--label`), `PI_CONTAINER_NAME` (`--name`).
+
+Verified live: foreign lock blocks with named-owner reason (model understood
+and reported it); stale lock auto-reaped and write succeeded; heartbeat
+registry populated; auto-acquire on first write with peers (owner file
+correct). The nudge injection path is the verified heartbeat + documented
+`context` message-append; not observed in a live two-agent transcript.
+
+## wtbs (~/piagent/wtbs, symlinked to ~/.local/bin)
+
+Worktree doctrine: 1 branch ↔ 1 directory, enforced at bootstrap.
+`wtbs <branch>` creates `../<project>-<branch>` (refuses duplicates).
+`spawn-ply [id] [-p "prompt"]` — detached, labeled (`ply.project`,
+`ply.worktree`, `ply.instance`), named `ply-<project>-<branch>-<id>`.
+Headless spawns close stdin (pi -p waits on stdin EOF otherwise — found the
+hard way). `attach` / `list-ply` (containers + lock owner + vicinity) /
+`stop-ply` / `destroy`.
+
+## pi:web instances
+
+`PI_WEB_INSTANCE=<name>` (default `main`): deterministic port
+(8504 + hash(path+instance) % 96) and per-(project,instance) data dir —
+concurrent pi-web daemons in the SAME worktree are now possible, sidestepping
+sessiond's single-owner-per-data-dir lock without fighting it.
