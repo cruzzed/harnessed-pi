@@ -1,0 +1,59 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - strong [ref=e7]: PI WEB
+        - button "Show Actions" [ref=e9] [cursor=pointer]: Actions
+      - heading [level=2] [ref=e12]:
+        - button "▾ Projects 0" [expanded] [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]: ▾ Projects
+          - generic [ref=e16]: "0"
+      - heading [level=2] [ref=e20]:
+        - button "▾ Workspaces 0" [expanded] [ref=e21] [cursor=pointer]:
+          - generic [ref=e22]: ▾ Workspaces
+          - generic [ref=e24]: "0"
+      - heading "▾ Sessions 0 Clean up Start a new session" [level=2] [ref=e28]:
+        - button "▾ Sessions" [expanded] [ref=e29] [cursor=pointer]
+        - generic [ref=e32]: "0"
+        - button "Clean up" [ref=e33] [cursor=pointer]
+        - button "Start a new session" [disabled] [ref=e34]: +
+  - generic [ref=e36]:
+    - separator "Resize navigation panel" [ref=e37]
+    - button "Collapse navigation panel" [expanded] [ref=e38] [cursor=pointer]
+  - main [ref=e39]:
+    - generic [ref=e40]: Add a project to start a session.
+  - generic [ref=e41]:
+    - separator "Resize workspace panel" [ref=e42]
+    - button "Collapse workspace panel" [expanded] [ref=e43] [cursor=pointer]
+  - status [ref=e45]:
+    - heading "No projects yet" [level=2] [ref=e48]
+    - paragraph [ref=e47]: Use Actions → Add Project to add a folder. Workspace tools will appear here after you choose a workspace.
+  - dialog "Add project" [ref=e171]:
+    - generic:
+      - banner [ref=e172]:
+        - strong [ref=e173]: Add project
+        - button "Close" [ref=e174] [cursor=pointer]: ×
+      - generic [ref=e175]:
+        - generic [ref=e176]:
+          - text: Project folder
+          - textbox "Project folder" [ref=e177]:
+            - /placeholder: /path/to/project or ~/code/project
+        - generic [ref=e178]:
+          - button /home/piuser/.cache/ [ref=e179] [cursor=pointer]
+          - button /home/piuser/.config/ [ref=e180] [cursor=pointer]
+          - button /home/piuser/.local/ [ref=e181] [cursor=pointer]
+          - button /home/piuser/.npm/ [ref=e182] [cursor=pointer]
+          - button /home/piuser/.ssh/ [ref=e183] [cursor=pointer]
+        - generic [ref=e184]:
+          - checkbox "Create the folder if it does not exist" [checked] [ref=e185]
+          - text: Create the folder if it does not exist
+        - generic [ref=e186]:
+          - checkbox "Trust this project" [disabled] [ref=e187]
+          - generic [ref=e188]: Trust this project
+        - generic [ref=e189]:
+          - text: Trusting lets pi load this project's .pi settings, extensions, skills, and packages.
+          - link "Learn about project trust" [ref=e190] [cursor=pointer]:
+            - /url: https://pi.dev/docs/latest/security
+      - contentinfo [ref=e191]:
+        - button "Cancel" [ref=e192] [cursor=pointer]
+        - button "Add project" [disabled] [ref=e193]

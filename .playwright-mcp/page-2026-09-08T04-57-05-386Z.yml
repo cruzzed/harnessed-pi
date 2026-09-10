@@ -1,0 +1,145 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - strong [ref=e7]: PI WEB
+        - button "Show Actions" [ref=e9] [cursor=pointer]: Actions
+      - heading [level=2] [ref=e12]:
+        - button "▾ Projects 0" [expanded] [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]: ▾ Projects
+          - generic [ref=e16]: "0"
+      - heading [level=2] [ref=e20]:
+        - button "▾ Workspaces 0" [expanded] [ref=e21] [cursor=pointer]:
+          - generic [ref=e22]: ▾ Workspaces
+          - generic [ref=e24]: "0"
+      - heading "▾ Sessions 0 Clean up Start a new session" [level=2] [ref=e28]:
+        - button "▾ Sessions" [expanded] [ref=e29] [cursor=pointer]
+        - generic [ref=e32]: "0"
+        - button "Clean up" [ref=e33] [cursor=pointer]
+        - button "Start a new session" [disabled] [ref=e34]: +
+  - generic [ref=e36]:
+    - separator "Resize navigation panel" [ref=e37]
+    - button "Collapse navigation panel" [expanded] [ref=e38] [cursor=pointer]
+  - main [ref=e39]:
+    - generic [ref=e40]: Add a project to start a session.
+  - generic [ref=e41]:
+    - separator "Resize workspace panel" [ref=e42]
+    - button "Collapse workspace panel" [expanded] [ref=e43] [cursor=pointer]
+  - status [ref=e45]:
+    - heading "No projects yet" [level=2] [ref=e48]
+    - paragraph [ref=e47]: Use Actions → Add Project to add a folder. Workspace tools will appear here after you choose a workspace.
+  - dialog "Action palette" [ref=e52]:
+    - generic:
+      - banner [ref=e53]:
+        - textbox "Search actions..." [ref=e54]
+        - button "Close" [ref=e55] [cursor=pointer]: ×
+      - generic [ref=e56]:
+        - button "Show Actions Open the command palette Ctrl+K General" [ref=e57] [cursor=pointer]:
+          - generic [ref=e58]:
+            - strong [ref=e59]: Show Actions
+            - generic [ref=e60]: Open the command palette
+          - generic [ref=e61]: Ctrl+K
+          - generic [ref=e62]: General
+        - button "Focus Prompt Move keyboard focus to the message composer Ctrl+G C General" [ref=e63] [cursor=pointer]:
+          - generic [ref=e64]:
+            - strong [ref=e65]: Focus Prompt
+            - generic [ref=e66]: Move keyboard focus to the message composer
+          - generic [ref=e67]: Ctrl+G C
+          - generic [ref=e68]: General
+        - button "Add Machine Register another PI WEB runtime reachable from this gateway Machine" [ref=e69] [cursor=pointer]:
+          - generic [ref=e70]:
+            - strong [ref=e71]: Add Machine
+            - generic [ref=e72]: Register another PI WEB runtime reachable from this gateway
+          - generic [ref=e73]: Machine
+        - button "Refresh Selected Machine Check whether the selected PI WEB runtime is online Machine" [ref=e74] [cursor=pointer]:
+          - generic [ref=e75]:
+            - strong [ref=e76]: Refresh Selected Machine
+            - generic [ref=e77]: Check whether the selected PI WEB runtime is online
+          - generic [ref=e78]: Machine
+        - button "Add Project Project" [ref=e79] [cursor=pointer]:
+          - strong [ref=e81]: Add Project
+          - generic [ref=e82]: Project
+        - button "Configure Provider Authentication Run /login without tying authentication to a session General" [ref=e83] [cursor=pointer]:
+          - generic [ref=e84]:
+            - strong [ref=e85]: Configure Provider Authentication
+            - generic [ref=e86]: Run /login without tying authentication to a session
+          - generic [ref=e87]: General
+        - button "Remove Provider Authentication Run /logout for stored pi credentials General" [ref=e88] [cursor=pointer]:
+          - generic [ref=e89]:
+            - strong [ref=e90]: Remove Provider Authentication
+            - generic [ref=e91]: Run /logout for stored pi credentials
+          - generic [ref=e92]: General
+        - button "Select Theme Choose the PI WEB color theme Preferences" [ref=e93] [cursor=pointer]:
+          - generic [ref=e94]:
+            - strong [ref=e95]: Select Theme
+            - generic [ref=e96]: Choose the PI WEB color theme
+          - generic [ref=e97]: Preferences
+        - button "Open Settings Manage PI WEB configuration and keyboard shortcuts Ctrl+, Preferences" [ref=e98] [cursor=pointer]:
+          - generic [ref=e99]:
+            - strong [ref=e100]: Open Settings
+            - generic [ref=e101]: Manage PI WEB configuration and keyboard shortcuts
+          - generic [ref=e102]: Ctrl+,
+          - generic [ref=e103]: Preferences
+        - button "Full Page Reload Reload the PI WEB browser page General" [ref=e104] [cursor=pointer]:
+          - generic [ref=e105]:
+            - strong [ref=e106]: Full Page Reload
+            - generic [ref=e107]: Reload the PI WEB browser page
+          - generic [ref=e108]: General
+        - button "Go to Chat Ctrl+1 Navigation" [ref=e109] [cursor=pointer]:
+          - strong [ref=e111]: Go to Chat
+          - generic [ref=e112]: Ctrl+1
+          - generic [ref=e113]: Navigation
+        - button "Copy PI WEB Diagnostics Copy version, installation, and status details for this machine, ready to paste into a bug report Info" [ref=e114] [cursor=pointer]:
+          - generic [ref=e115]:
+            - strong [ref=e116]: Copy PI WEB Diagnostics
+            - generic [ref=e117]: Copy version, installation, and status details for this machine, ready to paste into a bug report
+          - generic [ref=e118]: Info
+        - button "Check for PI WEB Updates Bypass cached release data and check the selected machine now Updates" [ref=e119] [cursor=pointer]:
+          - generic [ref=e120]:
+            - strong [ref=e121]: Check for PI WEB Updates
+            - generic [ref=e122]: Bypass cached release data and check the selected machine now
+          - generic [ref=e123]: Updates
+        - button "Clean Up Sessions Preview and manually clean up idle or archived sessions on the selected machine Sessions" [ref=e124] [cursor=pointer]:
+          - generic [ref=e125]:
+            - strong [ref=e126]: Clean Up Sessions
+            - generic [ref=e127]: Preview and manually clean up idle or archived sessions on the selected machine
+          - generic [ref=e128]: Sessions
+        - button "Focus Machines Move keyboard focus to the machine selector Ctrl+G M Navigation" [ref=e129] [cursor=pointer]:
+          - generic [ref=e130]:
+            - strong [ref=e131]: Focus Machines
+            - generic [ref=e132]: Move keyboard focus to the machine selector
+          - generic [ref=e133]: Ctrl+G M
+          - generic [ref=e134]: Navigation
+        - button "Focus Projects Move keyboard focus to the projects list Ctrl+G P Navigation" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]:
+            - strong [ref=e137]: Focus Projects
+            - generic [ref=e138]: Move keyboard focus to the projects list
+          - generic [ref=e139]: Ctrl+G P
+          - generic [ref=e140]: Navigation
+        - button "Focus Workspaces Move keyboard focus to the workspaces list Ctrl+G W Navigation" [ref=e141] [cursor=pointer]:
+          - generic [ref=e142]:
+            - strong [ref=e143]: Focus Workspaces
+            - generic [ref=e144]: Move keyboard focus to the workspaces list
+          - generic [ref=e145]: Ctrl+G W
+          - generic [ref=e146]: Navigation
+        - button "Focus Sessions Move keyboard focus to the sessions list Ctrl+G S Navigation" [ref=e147] [cursor=pointer]:
+          - generic [ref=e148]:
+            - strong [ref=e149]: Focus Sessions
+            - generic [ref=e150]: Move keyboard focus to the sessions list
+          - generic [ref=e151]: Ctrl+G S
+          - generic [ref=e152]: Navigation
+        - button "Reset Navigation Panel Size Restore the navigation panel to its default width View" [ref=e153] [cursor=pointer]:
+          - generic [ref=e154]:
+            - strong [ref=e155]: Reset Navigation Panel Size
+            - generic [ref=e156]: Restore the navigation panel to its default width
+          - generic [ref=e157]: View
+        - button "Reset Workspace Panel Size Restore the workspace panel to its default width View" [ref=e158] [cursor=pointer]:
+          - generic [ref=e159]:
+            - strong [ref=e160]: Reset Workspace Panel Size
+            - generic [ref=e161]: Restore the workspace panel to its default width
+          - generic [ref=e162]: View
+        - button "Reset Panel Sizes Restore all side panels to their default widths View" [ref=e163] [cursor=pointer]:
+          - generic [ref=e164]:
+            - strong [ref=e165]: Reset Panel Sizes
+            - generic [ref=e166]: Restore all side panels to their default widths
+          - generic [ref=e167]: View
