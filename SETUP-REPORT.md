@@ -193,3 +193,23 @@ hard way). `attach` / `list-ply` (containers + lock owner + vicinity) /
 (8504 + hash(path+instance) % 96) and per-(project,instance) data dir —
 concurrent pi-web daemons in the SAME worktree are now possible, sidestepping
 sessiond's single-owner-per-data-dir lock without fighting it.
+
+---
+
+# Addendum 3: integration contract with worktree-bootstrap — 2026-09-11
+
+The user's own `worktree-bootstrap` stays the worktree tool. The pi side needs
+nothing from it but environment variables at spawn time — the whole interface:
+
+| Variable | Set by spawner to | Effect |
+|---|---|---|
+| `PI_INSTANCE_ID` | unique per agent (e.g. `feat-x-a1`) | write-lock owner id, heartbeat id, `ply.instance` label |
+| `PI_LABELS` | `ply.project=<p>,ply.worktree=<b>` | docker labels for fleet listing (`docker ps --filter label=`) |
+| `PI_CONTAINER_NAME` | e.g. `ply-<p>-<b>-<id>` | named container for attach/stop |
+| `PI_WEB_INSTANCE` | per-daemon name (`main`, `review`…) | pi:web only: deterministic port 8504–8599 + per-instance data dir |
+
+All four are optional; an unlabeled `mise run pi` still works, it just shares
+instance id `default` (so give every *concurrent* agent a distinct id or the
+write-lock will treat them as one). Headless spawns must close stdin
+(`</dev/null`) or `pi -p` waits forever. Lock/heartbeat state lives in the
+worktree itself (`.pi-writelock/`, `.pi-agents/`) — any tool can inspect it.
