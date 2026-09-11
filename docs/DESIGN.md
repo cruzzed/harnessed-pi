@@ -142,3 +142,22 @@ State inspection needs no docker API: `cat .pi-writelock/owner`,
 - The image's `.npmrc` redirects `npm install -g` to `/pi-agent/npm-global`,
   which the runtime mount shadows — image-time installs need `--prefix=/usr/local`.
 - `docker logs` of `--rm` containers vanish at exit; headless spawns drop `--rm`.
+
+## 9. Web UIs (pi-web layers, ~/piagent/pi-web/)
+
+Two flavors coexist, both jailed, both sharing /pi-agent (sessions, settings,
+gate). Namespace `piweb:*`, cwd-is-context like all tasks.
+
+- **jmf** (jmfederico): battleship — two daemons, sessiond owns a data-dir
+  lock (hence per-instance data dirs), fleet/plugins/terminals,
+  spawn_session delegation. Ports 8504–8599 deterministic per instance.
+- **agegr**: minimalist — one process, reads pi session files directly, no
+  data-dir lock, `PI_WEB_PASSWORD` auth option, built-in worktree switcher.
+  Pins pi 0.85.1 (nested); CLI image pi may differ — bump base via
+  `pi:upgrade` if session-format drift ever bites.
+
+Gate verified firing under both runtimes. Known deltas for web agents: no
+container-context system-prompt injection (web agents don't know they're in a
+container — put it in project AGENTS.md), gate `confirm()` dialogs auto-deny,
+extension/setting changes need a daemon restart (startup snapshots), and the
+UI worktree-switcher can't reach sibling worktrees (jail sees one dir).
