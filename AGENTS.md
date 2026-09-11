@@ -11,7 +11,7 @@ safety gate, pi-web layers, protocol docs, and fleet tooling.
 | `pi-web/` | Web UI layer (agegr flavor: `Dockerfile.agegr`, `piweb:agegr*` mise tasks) |
 | `docs/DESIGN.md` | Architecture and design doctrine — read before changing conventions |
 | `.pi/global-agents.md`, `.pi/project-agents.md` | The harness protocol (Lead/Spec/Subagent) |
-| `probes/`, `prompts/` | Probe templates, AFK prompts |
+| `archive/` | Retired experiments (AFK tooling), frozen |
 | `SETUP-REPORT.md` | Operational history, append-only addenda |
 
 ## Commands
