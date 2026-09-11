@@ -46,6 +46,9 @@ A mise shim that builds one `docker run` per invocation:
 Blast radius by construction: one project directory. Nothing else exists in
 there. (Verified: `~` inside contains only the project.)
 
+pi-less-yolo is carried as a submodule of this repo (`pi-less-yolo/`),
+pinned to the fork `cruzzed/pi-less-yolo`'s `local` branch.
+
 ## 3. The safety gate (behavioral policy)
 
 Source: `~/piagent/extensions/safety-gate/` (modular: `index.ts` wiring +

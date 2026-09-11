@@ -1,0 +1,4 @@
+[submodule "pi-less-yolo"]
+	path = pi-less-yolo
+	url = https://github.com/cruzzed/pi-less-yolo.git
+	branch = local
