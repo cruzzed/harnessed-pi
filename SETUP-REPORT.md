@@ -254,3 +254,19 @@ Found `.env` (86 bytes, mtime Sep 10 21:16) in ~/piagent — was tracked in git
 and visible to every container/agent run in this project. Untracked and
 gitignored, but it remains in git history: **rotate whatever key is in it**,
 and prefer `~/.config/pi-agent/env` (outside all project dirs) for keys.
+
+---
+
+# Addendum 5: permlist, toolbox, gate retune — 2026-09-11
+
+- Gate blocks no longer terminate the turn; reasons carry the "needs human"
+  handoff protocol (verified: agent completes task, ends with handoff item).
+- rm -rf is target-aware now (worktree + /tmp allowed; root/home absolute;
+  elsewhere confirms) — the naive substring matched "rm -rf /tmp/x".
+- Permlist: gate-permissions.json in soul dir; 4-choice dialog; headless
+  consults allow rules. Found via live test: my own global directive was
+  overriding the user's standing allow — fixed (directives defer to permlist).
+- Toolbox: ~/.pi/toolbox → /toolbox ro in every container. Static-link
+  enforcement works (rejected glibc mise). NOTE: paths outside the project
+  mount don't exist in containers even when the gate allows the command.
+- gate-permissions.json is user state — gitignored in the soul repo.
