@@ -54,7 +54,7 @@ pinned to the fork `cruzzed/pi-less-yolo`'s `local` branch.
 Source: `~/piagent/extensions/safety-gate/` (modular: `index.ts` wiring +
 `policy.ts`/`writelock.ts`/`vicinity.ts`, unit-tested via `mise run test`),
 deployed by rsync to `~/.pi/agent/extensions/safety-gate/` (a directory
-extension — pi auto-discovers `index.ts`). Never edit the deployed copy. Original policy from `piagent.md`
+extension — pi auto-discovers `index.ts`). Never edit the deployed copy. Original policy from `docs/piagent.md`
 (absolute blocks, conditional blocks with UI confirm, PLAN/CODE modes via
 `/mode`, SPEC-file warnings) plus coordination v2:
 

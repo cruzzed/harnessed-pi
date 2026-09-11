@@ -270,3 +270,25 @@ and prefer `~/.config/pi-agent/env` (outside all project dirs) for keys.
   enforcement works (rejected glibc mise). NOTE: paths outside the project
   mount don't exist in containers even when the gate allows the command.
 - gate-permissions.json is user state — gitignored in the soul repo.
+
+
+---
+
+# Addendum 6: repo formalization as pi-harness — 2026-09-12
+
+- jmfederico pi-web layer removed (battleship; too invasive to integrate).
+  `piweb:jmf*` tasks and `Dockerfile.jmf` deleted; agegr is the only web UI.
+- AFK headless-run tooling retired to `archive/afk/` (script, runbook, lead
+  prompt, probe template). Not part of the active stack.
+- pi-less-yolo forked → `cruzzed/pi-less-yolo`; branch `local` (5 custom
+  commits: MOONSHOT forwarding, coordination passthroughs, fleet tasks,
+  toolbox) pushed and gitlinked as a submodule at `pi-less-yolo/`. The stale
+  repo-local clone was removed (its only diff was redundant with f46eb60).
+  Live install `~/pi-less-yolo` now tracks the fork via its `fork` remote.
+  The addendum-1 caveat "`mise run update` will conflict with the patch" is
+  obsolete — the fork carries it on `local`.
+- KIMI key rotated 2026-09-12; the old value remains in git history but is
+  dead. `.pi-agents/` and `.playwright-mcp/` untracked + gitignored (runtime
+  artifacts).
+- Repo formalized: README.md, MIT LICENSE, `piagent.md` → `docs/`,
+  branch `master` → `main`.
