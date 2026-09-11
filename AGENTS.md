@@ -8,6 +8,7 @@ safety gate, pi-web layers, protocol docs, and fleet tooling.
 | Path | Role |
 |---|---|
 | `extensions/safety-gate/` | The gate, modularized. `index.ts` = wiring only; logic lives in `policy.ts` (pure, unit-tested), `writelock.ts`, `vicinity.ts` |
+| `pi-less-yolo/` | Submodule → fork `cruzzed/pi-less-yolo`, branch `local` (the jail) |
 | `pi-web/` | Web UI layer (agegr flavor: `Dockerfile.agegr`, `piweb:agegr*` mise tasks) |
 | `docs/DESIGN.md` | Architecture and design doctrine — read before changing conventions |
 | `.pi/global-agents.md`, `.pi/project-agents.md` | The harness protocol (Lead/Spec/Subagent) |
@@ -32,4 +33,7 @@ safety gate, pi-web layers, protocol docs, and fleet tooling.
 - Blocks never terminate the turn; reasons carry the "needs human" handoff
   protocol.
 - Deployment is a directory (`index.ts` entry), not a single file.
+- `pi-less-yolo/` is a submodule. Customizations commit on branch `local`,
+  push to the fork, then bump the gitlink here. The live install
+  `~/pi-less-yolo` tracks the same branch via its `fork` remote.
 - `.env` is gitignored and must stay out of this directory (rotate-on-sight).

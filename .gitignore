@@ -1,2 +1,3 @@
-pi-less-yolo/
+.pi-agents/
+.playwright-mcp/
 .env
