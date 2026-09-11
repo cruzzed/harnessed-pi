@@ -213,3 +213,44 @@ instance id `default` (so give every *concurrent* agent a distinct id or the
 write-lock will treat them as one). Headless spawns must close stdin
 (`</dev/null`) or `pi -p` waits forever. Lock/heartbeat state lives in the
 worktree itself (`.pi-writelock/`, `.pi-agents/`) — any tool can inspect it.
+
+---
+
+# Addendum 4: pi-web layers moved + agegr variant — 2026-09-11
+
+## Restructure
+
+pi-web integration moved out of the pi-less-yolo clone into
+`~/piagent/pi-web/` (Dockerfiles + tasks), registered globally via
+`~/.config/mise/conf.d/pi-web-layers.toml` (task namespace `piweb:*`).
+pi-less-yolo stays close to upstream. `pi:web`/`pi:web-build` are gone;
+use `piweb:jmf*` / `piweb:agegr*`.
+
+## Tasks
+
+- `mise run piweb:jmf` — jmfederico battleship UI, `PI_WEB_INSTANCE` for
+  concurrent daemons (deterministic port 8504–8599, per-instance data dir)
+- `mise run piweb:agegr` — agegr minimalist UI, single process, port 30141
+  (`PI_WEB2_PORT` to override); no data-dir lock
+- `piweb:jmf-build` / `piweb:agegr-build` — rebuild images
+
+## agegr verification (live)
+
+- UI loads, auto-discovered the project and existing CLI sessions (shared
+  /pi-agent session files), model auto-selected from settings.json
+  (kimi-coding / kimi-for-coding)
+- **Safety gate fires under agegr's runtime** (pi 0.85.1): `sudo echo hi` →
+  `ABSOLUTE BLOCK: sudo` in the session transcript (session .jsonl confirmed)
+- Entrypoint gotcha found: image entrypoint execs `pi "$@"` for any non-bash
+  command — UI tasks must launch via `bash -c`
+- API prompt flow (for future scripting): POST /api/agent/new with
+  `type:"ensure_session"`, then POST /api/agent/<id> `{type:"prompt",
+  message:...}`. NOTE: observed lag between acceptance and runtime state
+  visibility — use the UI or session files as truth.
+
+## Security note
+
+Found `.env` (86 bytes, mtime Sep 10 21:16) in ~/piagent — was tracked in git
+and visible to every container/agent run in this project. Untracked and
+gitignored, but it remains in git history: **rotate whatever key is in it**,
+and prefer `~/.config/pi-agent/env` (outside all project dirs) for keys.
