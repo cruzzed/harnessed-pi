@@ -12,9 +12,11 @@
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import * as path from "node:path";
+import * as os from "node:os";
 import { evaluateBash, type Mode } from "./policy.ts";
 import * as writelock from "./writelock.ts";
 import * as vicinity from "./vicinity.ts";
+import * as permissions from "./permissions.ts";
 
 export default function (pi: ExtensionAPI) {
   let mode: Mode = "CODE";
@@ -23,6 +25,20 @@ export default function (pi: ExtensionAPI) {
 
   const resolvePath = (from: string, to: string) =>
     to.startsWith("/") ? path.resolve(to) : path.resolve(from, to);
+
+  // ─── permlist (persistent gate memory) ───
+  const AGENT_DIR = process.env.PI_CODING_AGENT_DIR || path.join(os.homedir(), ".pi", "agent");
+  const perms = {
+    store: permissions.loadStore(AGENT_DIR),
+    allow(rule: string) {
+      this.store = permissions.record(this.store, "allow", rule);
+      permissions.saveStore(AGENT_DIR, this.store);
+    },
+    block(rule: string) {
+      this.store = permissions.record(this.store, "block", rule);
+      permissions.saveStore(AGENT_DIR, this.store);
+    },
+  };
 
   // ─── /mode ───
   pi.registerCommand("mode", {
@@ -35,6 +51,26 @@ export default function (pi: ExtensionAPI) {
       }
       mode = m.toUpperCase() as Mode;
       ctx.ui.notify(`Safety mode: ${mode}`, mode === "YOLO" ? "warning" : "info");
+    },
+  });
+
+  // ─── /permlist ───
+  pi.registerCommand("permlist", {
+    description: "Gate memory: list | clear <rule>",
+    handler: async (args, ctx) => {
+      const parts = (args || "list").trim().split(/\s+/);
+      if (parts[0] === "clear" && parts[1]) {
+        perms.store = {
+          allow: perms.store.allow.filter((r) => r !== parts[1]),
+          block: perms.store.block.filter((r) => r !== parts[1]),
+        };
+        permissions.saveStore(AGENT_DIR, perms.store);
+        ctx.ui.notify(`Cleared permlist rule '${parts[1]}'`, "info");
+        return;
+      }
+      const a = perms.store.allow.map((r) => `  allow: ${r}`).join("\n") || "  (none)";
+      const b = perms.store.block.map((r) => `  block: ${r}`).join("\n") || "  (none)";
+      ctx.ui.notify(`Permlist:\n${a}\n${b}`, "info");
     },
   });
 
@@ -78,9 +114,30 @@ export default function (pi: ExtensionAPI) {
       const verdict = evaluateBash(cmd, ctx.cwd, mode, resolvePath);
       if (verdict.action === "block") return { block: true, reason: verdict.reason };
       if (verdict.action === "confirm") {
-        if (!ctx.hasUI) return { block: true, reason: `${verdict.reason} (auto-denied: no UI)` };
-        const ok = await ctx.ui.confirm("Dangerous Command", `Allow: ${cmd}?`);
-        if (!ok) return { block: true, reason: `User denied: ${cmd.slice(0, 80)}` };
+        const rule = verdict.rule;
+        if (permissions.isBlocked(perms.store, rule)) {
+          return { block: true, reason: `Blocked forever by permlist rule '${rule}'. Remove it from gate-permissions.json to re-enable.` };
+        }
+        if (!permissions.isAllowed(perms.store, rule)) {
+          if (!ctx.hasUI) {
+            return { block: true, reason: `${verdict.reason} (auto-denied: no UI; approve once interactively to allow-always)` };
+          }
+          const choice = await ctx.ui.select(`Dangerous Command — ${verdict.reason}\n\n${cmd}`, [
+            "Allow once",
+            "Allow always",
+            "Cancel",
+            "Block forever",
+          ]);
+          if (choice === "Allow once") { /* fall through */ }
+          else if (choice === "Allow always") { perms.allow(rule); }
+          else if (choice === "Block forever") {
+            perms.block(rule);
+            return { block: true, reason: `Blocked forever: rule '${rule}' saved to permlist.` };
+          } else { // Cancel or dismissed
+            return { block: true, reason: `User denied: ${cmd.slice(0, 80)}` };
+          }
+        }
+        // allowed (once/always/permlist): fall through
       }
       // Vicinity-conditional bash-write heuristics while a foreign lock is held.
       // HEURISTIC — catches the forgetful, not the adversarial.
