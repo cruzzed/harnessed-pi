@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-#MISE description="Build the pi-less-yolo-web image (jmfederico pi-web layer)"
-set -euo pipefail
-
-docker build -f "${MISE_TASK_DIR}/../../Dockerfile.jmf" -t pi-less-yolo-web:latest "${MISE_TASK_DIR}/../.."

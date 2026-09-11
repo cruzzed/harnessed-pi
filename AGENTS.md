@@ -8,7 +8,7 @@ safety gate, pi-web layers, protocol docs, and fleet tooling.
 | Path | Role |
 |---|---|
 | `extensions/safety-gate/` | The gate, modularized. `index.ts` = wiring only; logic lives in `policy.ts` (pure, unit-tested), `writelock.ts`, `vicinity.ts` |
-| `pi-web/` | Web UI layers (jmfederico + agegr Dockerfiles, `piweb:*` mise tasks) |
+| `pi-web/` | Web UI layer (agegr flavor: `Dockerfile.agegr`, `piweb:agegr*` mise tasks) |
 | `docs/DESIGN.md` | Architecture and design doctrine — read before changing conventions |
 | `.pi/global-agents.md`, `.pi/project-agents.md` | The harness protocol (Lead/Spec/Subagent) |
 | `probes/`, `prompts/` | Probe templates, AFK prompts |

@@ -146,24 +146,27 @@ State inspection needs no docker API: `cat .pi-writelock/owner`,
   which the runtime mount shadows — image-time installs need `--prefix=/usr/local`.
 - `docker logs` of `--rm` containers vanish at exit; headless spawns drop `--rm`.
 
-## 9. Web UIs (pi-web layers, ~/piagent/pi-web/)
+## 9. Web UI (pi-web layer, ~/piagent/pi-web/)
 
-Two flavors coexist, both jailed, both sharing /pi-agent (sessions, settings,
-gate). Namespace `piweb:*`, cwd-is-context like all tasks.
+One flavor: **agegr** — minimalist, one process, reads pi session files
+directly, no data-dir lock, `PI_WEB_PASSWORD` auth option, built-in worktree
+switcher. Namespace `piweb:agegr*`, cwd-is-context like all tasks. Installed
+from npm (`@agegr/pi-web`) as a dependency, not forked. Pins pi 0.85.1
+(nested); CLI image pi may differ — bump base via `pi:upgrade` if
+session-format drift ever bites. (The jmfederico battleship layer was removed
+2026-09-12 — too invasive to integrate without breaking things.)
 
-- **jmf** (jmfederico): battleship — two daemons, sessiond owns a data-dir
-  lock (hence per-instance data dirs), fleet/plugins/terminals,
-  spawn_session delegation. Ports 8504–8599 deterministic per instance.
-- **agegr**: minimalist — one process, reads pi session files directly, no
-  data-dir lock, `PI_WEB_PASSWORD` auth option, built-in worktree switcher.
-  Pins pi 0.85.1 (nested); CLI image pi may differ — bump base via
-  `pi:upgrade` if session-format drift ever bites.
-
-Gate verified firing under both runtimes. Known deltas for web agents: no
+Gate verified firing in-session. Known deltas for web agents: no
 container-context system-prompt injection (web agents don't know they're in a
-container — put it in project AGENTS.md), gate `confirm()` dialogs auto-deny,
-extension/setting changes need a daemon restart (startup snapshots), and the
-UI worktree-switcher can't reach sibling worktrees (jail sees one dir).
+container — put it in project AGENTS.md), extension/setting changes need a
+daemon restart (startup snapshots), and the UI worktree-switcher can't reach
+sibling worktrees (jail sees one dir).
+
+Gate `confirm()` dialogs: **agegr ≥0.9.0 bridges them to a browser modal**
+(verified 2026-09-11 — the gate's 4-choice select for `git reset --hard`
+surfaced as an `extension_ui_request` over SSE and `Allow once` let the
+command run; no timeout, so the agent turn blocks until a human answers —
+unattended web runs can park indefinitely). Below 0.9.0 they auto-deny.
 
 ## 10. Safety taxonomy (revised philosophy)
 
