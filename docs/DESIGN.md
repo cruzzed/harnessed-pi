@@ -164,3 +164,41 @@ container-context system-prompt injection (web agents don't know they're in a
 container — put it in project AGENTS.md), gate `confirm()` dialogs auto-deny,
 extension/setting changes need a daemon restart (startup snapshots), and the
 UI worktree-switcher can't reach sibling worktrees (jail sees one dir).
+
+## 10. Safety taxonomy (revised philosophy)
+
+Safety decomposes by concern, each with an owning layer. The gate does NOT
+protect the host (that's the container's job) — its real territory is the
+workspace contents, network governance, coordination, and handoff UX.
+
+| Concern | Owner | Strength |
+|---|---|---|
+| host system | container (mounts, caps, no socket) | physical |
+| resources (loops/leaks) | cgroups + timeouts | physical |
+| tool capability per role | spawn-time toolset restriction | mechanical |
+| workspace contents | gate + git + worktrees | mechanical/heuristic |
+| network egress | gate pattern blocks only | weakest layer |
+| coordination | write-lock + vicinity | cooperative |
+
+Blocks like mkfs/dd-to-device are intent *signals*, not enforcement — those
+targets don't exist in the jail anyway. Pipe-to-shell blocks matter because
+the network is open: unreviewed remote code executes in a room containing the
+project and the soul dir.
+
+## 11. Permlist (gate memory)
+
+Ask-by-default with persistent decisions, Claude-Code-style:
+`allow once / allow always / cancel / block forever`. Rules are coarse classes
+(`conditional:git reset --hard`, `rm-rf-outside`, …), stored in
+`gate-permissions.json` in the soul dir (survives all containers).
+Allow-rules are consulted headless — approve once in the TUI, applies to
+web/headless runs. Block-rules promote a confirm class to a hard block.
+`/permlist list|clear <rule>` inside sessions. Hierarchy: permlist (user's
+standing decision) > gate defaults; AGENTS.md directives defer to permlist.
+
+## 12. Toolbox (`~/.pi/toolbox`)
+
+User-curated global tools, mounted read-only at `/toolbox` in every container.
+`mise run pi:toolbox add|list|remove`. musl image ⇒ statically-linked binaries
+or scripts only (enforced at add time via ldd check). Read-only so agents
+can't poison the shared toolset.

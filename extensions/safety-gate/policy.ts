@@ -11,8 +11,8 @@
 
 export type Verdict =
   | { action: "allow" }
-  | { action: "block"; reason: string }
-  | { action: "confirm"; reason: string };
+  | { action: "block"; reason: string; rule?: string }
+  | { action: "confirm"; reason: string; rule: string };
 
 const HANDOFF_HINT =
   "Do NOT retry or work around it. Note the exact command in a \"needs human\" list, " +
@@ -38,12 +38,12 @@ const ABSOLUTE_REGEXES = [
 export function checkAbsolute(cmd: string): Verdict {
   for (const p of ABSOLUTE_PATTERNS) {
     if (cmd.includes(p)) {
-      return { action: "block", reason: `ABSOLUTE BLOCK: '${p.trim()}' is not permitted in this environment. ${HANDOFF_HINT}` };
+      return { action: "block", reason: `ABSOLUTE BLOCK: '${p.trim()}' is not permitted in this environment. ${HANDOFF_HINT}`, rule: `absolute:${p.trim()}` };
     }
   }
   for (const re of ABSOLUTE_REGEXES) {
     if (re.test(cmd)) {
-      return { action: "block", reason: `ABSOLUTE BLOCK: pipe-to-shell download. ${HANDOFF_HINT}` };
+      return { action: "block", reason: `ABSOLUTE BLOCK: pipe-to-shell download. ${HANDOFF_HINT}`, rule: "absolute:pipe-to-shell" };
     }
   }
   return { action: "allow" };
@@ -55,7 +55,7 @@ const CONDITIONAL_PATTERNS = ["git reset --hard", "git clean -fd", "drop databas
 export function checkConditional(cmd: string): Verdict {
   for (const p of CONDITIONAL_PATTERNS) {
     if (cmd.includes(p)) {
-      return { action: "confirm", reason: `Dangerous command: '${p.trim()}'. ${HANDOFF_HINT}` };
+      return { action: "confirm", reason: `Dangerous command: '${p.trim()}'. ${HANDOFF_HINT}`, rule: `conditional:${p.trim()}` };
     }
   }
   return { action: "allow" };
@@ -96,6 +96,7 @@ export function analyzeRmRf(
     return {
       action: "block",
       reason: `ABSOLUTE BLOCK: rm recursive+force on root/home. ${HANDOFF_HINT}`,
+      rule: "absolute:rm-rf-root-home",
     };
   }
 
@@ -110,6 +111,7 @@ export function analyzeRmRf(
     return {
       action: "confirm",
       reason: `rm recursive+force outside worktree and /tmp: ${risky.join(", ")}. ${HANDOFF_HINT}`,
+      rule: "rm-rf-outside",
     };
   }
   return { action: "allow" };
