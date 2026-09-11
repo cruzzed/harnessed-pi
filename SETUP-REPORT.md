@@ -171,7 +171,13 @@ registry populated; auto-acquire on first write with peers (owner file
 correct). The nudge injection path is the verified heartbeat + documented
 `context` message-append; not observed in a live two-agent transcript.
 
-## wtbs (~/piagent/wtbs, symlinked to ~/.local/bin)
+## [SUPERSEDED] wtbs
+
+Removed: user already has `worktree-bootstrap` (`~/.local/bin/worktree-bootstrap`).
+This section's implementation is gone; the integration contract lives in
+"Addendum 3". Original text kept for the design rationale:
+
+
 
 Worktree doctrine: 1 branch ↔ 1 directory, enforced at bootstrap.
 `wtbs <branch>` creates `../<project>-<branch>` (refuses duplicates).
