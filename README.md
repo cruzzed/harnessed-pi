@@ -1,4 +1,4 @@
-# pi-harness
+# harnessed-pi
 
 The harness that makes pi *ours*: a locked-down container, a behavioral
 safety gate, a web UI layer, and the protocols/fleet tooling to run multiple

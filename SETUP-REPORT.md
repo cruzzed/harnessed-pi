@@ -274,7 +274,7 @@ and prefer `~/.config/pi-agent/env` (outside all project dirs) for keys.
 
 ---
 
-# Addendum 6: repo formalization as pi-harness — 2026-09-12
+# Addendum 6: repo formalization as harnessed-pi — 2026-09-12
 
 - jmfederico pi-web layer removed (battleship; too invasive to integrate).
   `piweb:jmf*` tasks and `Dockerfile.jmf` deleted; agegr is the only web UI.
