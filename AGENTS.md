@@ -35,5 +35,6 @@ safety gate, pi-web layers, protocol docs, and fleet tooling.
 - Deployment is a directory (`index.ts` entry), not a single file.
 - `pi-less-yolo/` is a submodule. Customizations commit on branch `local`,
   push to the fork, then bump the gitlink here. The live install
-  `~/pi-less-yolo` tracks the same branch via its `fork` remote.
+  `~/projects/pi-less-yolo` tracks the same branch via its `fork` remote.
+  (All projects live under `~/projects/` since 2026-09; old paths are symlinks.)
 - `.env` is gitignored and must stay out of this directory (rotate-on-sight).
