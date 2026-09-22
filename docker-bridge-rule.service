@@ -1,0 +1,13 @@
+[Unit]
+Description=Pin docker bridge subnet to main routing table (tailscale 172.17/16 collision fix)
+After=network-pre.target tailscaled.service
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/ip rule add to 172.17.0.0/16 pref 5200 lookup main
+ExecStop=/sbin/ip rule del to 172.17.0.0/16 pref 5200 lookup main
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
