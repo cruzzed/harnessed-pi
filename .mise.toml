@@ -1,0 +1,14 @@
+[tools]
+node = "26"
+
+[tasks.test]
+description = "Unit tests for extensions (node --test, type-stripped TS)"
+run = 'node --test "extensions/**/*.test.ts"'
+
+[tasks.deploy]
+description = "Deploy extensions to ~/.pi/agent/extensions/ (rsync, delete stale)"
+run = "rsync -a --delete extensions/safety-gate/ ${HOME}/.pi/agent/extensions/safety-gate/ --exclude '*.test.ts'"
+
+[tasks."check"]
+description = "test + deploy + verify gate loads"
+run = ["mise run test", "mise run deploy"]

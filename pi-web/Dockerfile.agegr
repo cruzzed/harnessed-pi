@@ -1,0 +1,11 @@
+# syntax=docker/dockerfile:1
+
+# pi-less-yolo-web2: agegr/pi-web (minimalist Next.js UI) layered on the jail image.
+# Base -dev image already ships gcc/g++/make/python3 for node-pty's musl build.
+# --prefix=/usr/local: the base .npmrc redirects global installs to the
+# runtime-shadowed /pi-agent/npm-global.
+FROM pi-less-yolo:latest
+
+USER root
+RUN npm install -g --prefix=/usr/local @agegr/pi-web@latest --allow-scripts=node-pty
+USER node

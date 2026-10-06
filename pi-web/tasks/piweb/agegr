@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#MISE description="Run agegr/pi-web (minimalist UI) in the pi-less-yolo-web2 container, localhost:30141"
+#MISE raw=true
+#MISE dir="{{cwd}}"
+set -euo pipefail
+
+# shellcheck source=/dev/null
+source "${HOME}/pi-less-yolo/tasks/pi/_docker_flags"
+
+# Single-process UI, no daemon pair, no data-dir lock. Reads pi's session files
+# directly from /pi-agent. Concurrent instances need only distinct ports:
+#   PI_WEB2_PORT=30142 mise run piweb:agegr
+# Note: all sessions inside one daemon share PI_INSTANCE_ID (one process).
+INSTANCE="${PI_WEB2_INSTANCE:-main}"
+export PI_INSTANCE_ID="web2-${INSTANCE}"
+PI_CONTAINER_NAME="ply-web2-$(basename "$(pwd)")-${INSTANCE}"
+export PI_CONTAINER_NAME
+# PI_LABELS unset: default ply.project/ply.worktree labels apply.
+
+PI_IMAGE="pi-less-yolo-web2:latest"
+"${DOCKER_CMD}" image inspect "${PI_IMAGE}" > /dev/null 2>&1 || mise run piweb:agegr-build
+
+DOCKER_FLAGS+=("--interactive")
+[ -t 0 ] && [ -t 1 ] && DOCKER_FLAGS+=("--tty")
+
+PI_WEB2_PORT="${PI_WEB2_PORT:-30141}"
+DOCKER_FLAGS+=("--publish" "127.0.0.1:${PI_WEB2_PORT}:30141")
+
+echo "pi-web2 (agegr) UI: http://127.0.0.1:${PI_WEB2_PORT} (Ctrl-C stops the container)" >&2
+
+# Entrypoint note: the image's entrypoint.sh execs `pi "$@"` for any command
+# that isn't bash/sh, so the UI must be launched via bash -c.
+"${DOCKER_CMD}" run "${DOCKER_FLAGS[@]}" "${PI_IMAGE}" \
+  bash -c 'exec pi-web --no-open --hostname 0.0.0.0 --port 30141'
