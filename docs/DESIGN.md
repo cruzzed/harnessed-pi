@@ -178,3 +178,5 @@ project and the soul dir.
 | 0001 | The soul is a generated artifact of this repo |
 | 0002 | Canonical run surface; personal tooling out of scope |
 | 0003 | Protocol shrunk to surviving tooling |
+| 0004 | The blind core is jail + seam + file formats |
+| 0005 | Web channel cut to spawn contract (web lives on as the maintainer's personal attachment) |

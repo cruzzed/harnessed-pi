@@ -316,3 +316,21 @@ ADR 0001 implemented: the repo→soul seam is now mechanical, not advisory.
   run, which ADR 0001 counts as a design smell.
 - Still open from issue #1: settings.json's dead `packages` reference (removed
   jmfederico layer) — soul runtime state, left for a separate cleanup pass.
+
+---
+
+# Addendum 8: packaging — core boundary, web channel cut — 2026-10-07
+
+Design dialogue ("hammer the design into architectural ideals"): four ideals
+accepted — technology-blind core, one-directional attachment, locality of
+behavior, UNIX-y composability. Decisions recorded:
+
+- ADR 0004: the blind core = jail + seam + file formats; the gate's hook
+  adapter, protocol, and channels are the opinion layer. One repo, boundary
+  declared in DESIGN.md.
+- ADR 0005: `pi-web/` removed from the repo. The package ships the spawn
+  contract only (jail entrypoints + cwd + PI_INSTANCE_ID/PI_LABELS/
+  PI_CONTAINER_NAME). The maintainer's web layer continues as a personal
+  attachment on that contract — launcher in ~/.local/bin, image recipe and
+  original piweb tasks in the maintainer's personal share dir. Issue #1's
+  web items closed by deletion, not repair.

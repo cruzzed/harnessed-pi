@@ -8,8 +8,8 @@ safety gate, pi-web layers, protocol docs, and fleet tooling.
 | Path | Role |
 |---|---|
 | `extensions/safety-gate/` | The gate, modularized. `index.ts` = wiring only; logic lives in `policy.ts` (pure, unit-tested), `writelock.ts`, `vicinity.ts`, `permissions.ts` |
-| `pi-less-yolo/` | Submodule → fork `cruzzed/pi-less-yolo`, branch `local` (the jail) |
-| `pi-web/` | Web UI layer (`Dockerfile.agegr`, `piweb:*` mise tasks). The maintainer's browser bring-up script is personal tooling, out of scope (ADR 0002) |
+| `pi-less-yolo/` | Submodule → fork `cruzzed/pi-less-yolo`, branch `local` — **the core** (jail): blind process containment (ADR 0004) |
+| `scripts/soul` | The seam: apply/verify of harness-owned soul state — **the core** (ADR 0001, 0004) |
 | `docs/DESIGN.md` | Design doctrine — read before changing conventions |
 | `docs/adr/` | Decision records; a decision is not real until it is written here |
 | `.pi/global-agents.md`, `.pi/project-agents.md` | The opinion layer: imperative protocol instructions (shrunk per ADR 0003) |
