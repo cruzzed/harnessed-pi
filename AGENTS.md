@@ -12,17 +12,18 @@ safety gate, pi-web layers, protocol docs, and fleet tooling.
 | `pi-web/` | Web UI layer (`Dockerfile.agegr`, `piweb:*` mise tasks). The maintainer's browser bring-up script is personal tooling, out of scope (ADR 0002) |
 | `docs/DESIGN.md` | Design doctrine — read before changing conventions |
 | `docs/adr/` | Decision records; a decision is not real until it is written here |
-| `.pi/global-agents.md`, `.pi/project-agents.md` | The imperative protocol instructions agents follow directly (shrunk per ADR 0003) |
+| `.pi/global-agents.md`, `.pi/project-agents.md` | The opinion layer: imperative protocol instructions (shrunk per ADR 0003) |
 | `docs/protocol-global-design.md` | Design-doc counterpart of `.pi/global-agents.md` — pre-shrink full protocol, frozen record |
 | `docs/protocol-project-design.md` | Design-doc counterpart of `.pi/project-agents.md` (verbatim pre-instruction form) |
-| `archive/` | Retired experiments (AFK tooling), frozen |
+| `archive/` | Retired experiments (AFK/probes tooling), frozen |
 | `SETUP-REPORT.md` | Operational history, append-only addenda |
 
 ## Commands
 
 - `mise run test` — unit tests (node --test, type-stripped TS; mise provides node 26)
-- `mise run deploy` — rsync `extensions/safety-gate/` → `~/.pi/agent/extensions/safety-gate/`
-- `mise run check` — test + deploy
+- `mise run apply` — materialize the harness-owned soul subset (`scripts/soul apply`; self-heals the empty-root-owned-extensions wipe)
+- `mise run verify` — prove the soul matches the repo (writability + checksums); exits non-zero on drift
+- `mise run check` — test + apply + verify — the only path from repo to soul
 
 ## Conventions (law)
 

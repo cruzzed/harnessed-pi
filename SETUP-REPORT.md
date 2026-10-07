@@ -294,3 +294,25 @@ release on 2026-10-06; no key material exists in this history. Still: prefer
   artifacts).
 - Repo formalized: README.md, MIT LICENSE, `piagent.md` → `docs/`,
   branch `master` → `main`.
+
+---
+
+# Addendum 7: soul apply/verify mechanism — 2026-10-07
+
+ADR 0001 implemented: the repo→soul seam is now mechanical, not advisory.
+
+- `scripts/soul` with `mise run apply` / `mise run verify`; `check` = test +
+  apply + verify. Managed subset: `extensions/safety-gate/` only — soul
+  runtime data (sessions, auth, settings, permlist) is never touched.
+- Apply self-heals the Sep-19 wipe mode: an empty root-owned `extensions/`
+  dir is rmdir'd and recreated without sudo (verified live 2026-10-07 —
+  the root-owned leftover was healed and the gate redeployed). Non-writable
+  and non-empty → apply fails with the exact `sudo chown` command.
+- Verify is drift monitoring, not just post-deploy: writability check +
+  `rsync -rcn` checksum dry-run, exits non-zero on divergence. Negative-tested
+  (tampered policy.ts detected, exit 1; re-apply restored).
+- Load-smoke stays manual: in a live session, `/permlist list` exists iff the
+  gate loaded. Not automated — an automated load check costs an LLM call per
+  run, which ADR 0001 counts as a design smell.
+- Still open from issue #1: settings.json's dead `packages` reference (removed
+  jmfederico layer) — soul runtime state, left for a separate cleanup pass.

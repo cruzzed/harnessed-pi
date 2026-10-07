@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# soul — materialize (apply) and prove (verify) the harness-owned subset of
+# the soul directory. Managed subset: extensions/safety-gate only.
+# Everything else in the soul (sessions, auth, settings, permlist) is runtime
+# state and is never touched here. See docs/adr/0001-soul-as-artifact.md.
+set -euo pipefail
+
+SOUL="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+EXT="$SOUL/extensions"
+GATE_SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/extensions/safety-gate"
+GATE_DST="$EXT/safety-gate"
+RSYNC_EXCLUDES=(--exclude '*.test.ts')
+
+die() { echo "soul: $*" >&2; exit 1; }
+
+# The known wipe mode: extensions/ recreated root-owned (and therefore empty,
+# since the root process only makes the dir). The soul parent is user-owned,
+# so an empty root-owned dir can be removed and recreated without sudo. A
+# non-empty non-writable dir is a genuine problem — hand it to the human.
+ensure_writable_ext() {
+  if [ -d "$EXT" ] && [ -w "$EXT" ]; then return; fi
+  if [ -d "$EXT" ]; then
+    if rmdir "$EXT" 2>/dev/null; then
+      echo "soul: removed empty non-writable $EXT (root-owned leftover), recreating"
+    else
+      die "$EXT is not writable and not empty. Fix ownership, then re-run:
+  sudo chown -R $USER:$USER '$SOUL'"
+    fi
+  fi
+  mkdir -p "$EXT" || die "cannot create $EXT (parent missing or not writable?)"
+}
+
+cmd_apply() {
+  [ -d "$GATE_SRC" ] || die "gate source missing: $GATE_SRC"
+  ensure_writable_ext
+  rsync -a --delete "${RSYNC_EXCLUDES[@]}" "$GATE_SRC/" "$GATE_DST/"
+  echo "soul: applied safety-gate -> $GATE_DST"
+}
+
+cmd_verify() {
+  local fails=0
+
+  if [ ! -d "$EXT" ] || [ ! -w "$EXT" ]; then
+    echo "soul: FAIL extensions dir missing or not user-writable: $EXT"
+    fails=1
+  elif [ ! -d "$GATE_DST" ]; then
+    echo "soul: FAIL safety-gate absent from soul (run: mise run apply)"
+    fails=1
+  elif [ -n "$(rsync -rcin --delete "${RSYNC_EXCLUDES[@]}" "$GATE_SRC/" "$GATE_DST/")" ]; then
+    echo "soul: FAIL deployed gate diverges from repo (run: mise run apply)"
+    fails=1
+  fi
+
+  if [ "$fails" -eq 0 ]; then
+    echo "soul: OK — extensions user-writable, gate present and byte-identical to repo"
+  else
+    echo "soul: verify failed — the repo->soul seam is diverged or broken (issue #1 mode)"
+  fi
+  exit "$fails"
+}
+
+case "${1:-}" in
+  apply) cmd_apply ;;
+  verify) cmd_verify ;;
+  *) echo "usage: soul apply|verify" >&2; exit 2 ;;
+esac

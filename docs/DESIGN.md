@@ -46,9 +46,13 @@ is what makes the depth real.
 ## 2. The soul is a generated artifact (ADR 0001)
 
 `~/.pi/agent` is materialized from this repo by an idempotent apply, and a
-verify step proves what is present and loading. The repo is the source of
-truth for everything the harness owns (extensions, protocol files); the soul
-keeps its runtime data (sessions, auth, permlist) which apply never clobbers.
+verify step proves what is present and byte-identical to the repo. The
+mechanism is `scripts/soul` (`mise run apply` / `mise run verify`; `check`
+chains test + apply + verify). The managed subset is exactly
+`extensions/safety-gate/`; the soul keeps its runtime data (sessions, auth,
+permlist, settings) which apply never clobbers. Apply self-heals the known
+wipe mode — an empty root-owned `extensions/` dir is removed and recreated
+without sudo — and fails with the exact `chown` command when it can't.
 
 This makes "never edit the soul directly" the only sane path rather than a
 convention: the directory is reproducible, hand-edits are disposable, and a
