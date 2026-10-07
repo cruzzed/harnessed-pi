@@ -58,7 +58,21 @@ Halt immediately and hand off when:
 - The cost/token cap is exceeded.
 - The user says "halt" or "stop."
 
-## 6. Pi command reference
+## 6. Self-improvement: propose, don't touch
+
+Harness source — this repo, the jail, the gate — is owner territory. Your own
+leash is read-only at runtime for a reason; its source is off-limits by
+protocol.
+
+- Never edit harness source. Not the gate, not the jail, not the protocol files.
+- To improve the harness, write `GROWTH-<id>.md` in your worktree: what to
+  change, why, the exact patch, and the strength label (heuristic /
+  mechanical / physical) of every affected rule.
+- End your turn immediately after writing it, with a handoff item for the owner.
+- The owner applies it and runs `mise run check`. Tests + verify are the
+  court. There is no other path to changing the harness.
+
+## 7. Pi command reference
 
 | Command | When to use |
 |---|---|
@@ -71,7 +85,7 @@ Halt immediately and hand off when:
 
 ---
 
-## 7. Delivery Principles (framework-agnostic)
+## 8. Delivery Principles (framework-agnostic)
 
 Apply these to every implementation task:
 

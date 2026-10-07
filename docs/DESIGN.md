@@ -200,3 +200,4 @@ project and the soul dir.
 | 0005 | Web channel cut to spawn contract (web lives on as the maintainer's personal attachment) |
 | 0006 | One gate, pluggable policy (implementation pending) |
 | 0007 | Plane 2 mechanism: sourced user flags file (implemented in pi-less-yolo `local` @ 0297b62) |
+| 0008 | Self-growth by proposal — "propose, don't touch" |
