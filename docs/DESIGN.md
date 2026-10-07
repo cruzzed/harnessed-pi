@@ -132,7 +132,25 @@ Browser-based bring-up exists as the maintainer's personal tooling, kept
 outside this repo: not project scope, not canonical, not reconciled. Direct
 `pi-less-yolo` invocation is the escape hatch, not a supported surface.
 
-## 8. Agent protocol (ADR 0003)
+
+## 8. Customization: planes, not plugins
+
+Every customization attaches through one of three planes. Only a new plane —
+or a new file format — is a core change, and that is ADR-worthy, not a patch.
+
+| Plane | Relationship to core | Carries | Examples |
+|---|---|---|---|
+| Behavioral | content, delivered read-only by the seam | soul extensions (pi multiplexes hooks) | smarter gate as *rules* (ADR 0006), other extensions |
+| Environmental | parameters, forwarded per-run | mounts, labels, resources, keys | `PI_EXTRA_MOUNTS`, the flags file (ADR 0007) |
+| Channels | consumers, external, unprivileged | anything that can `cd` and invoke the entrypoints | TUI, one-shot calls, web (the maintainer's personal attachment, ADR 0005) |
+
+The rules of the planes: behavioral customization is *one gate, pluggable
+policy* — the single-leash invariant means customizers write rules, not
+second gating extensions (ADR 0006). Environmental customization is per-user,
+never repo-tracked (ADR 0007). A channel is anyone's to build on the spawn
+contract; the package's obligation is only that the contract stays stable.
+
+## 9. Agent protocol (ADR 0003)
 
 `.pi/global-agents.md` is the live protocol — shrunk to the discipline the
 surviving machinery supports: worktree doctrine, lock coordination, gate
@@ -141,7 +159,7 @@ as a *convention* (append-only external memory). The full Lead↔Spec↔Subagent
 loop with probe reports is recorded in `docs/protocol-global-design.md`
 should it ever earn un-retirement (a new ADR, not a silent drift).
 
-## 9. Safety taxonomy
+## 10. Safety taxonomy
 
 Safety decomposes by concern, each with an owning layer. The gate does NOT
 protect the host (that's the container's job) — its territory is workspace
@@ -162,7 +180,7 @@ targets don't exist in the jail anyway. Pipe-to-shell blocks matter because
 the network is open: unreviewed remote code executes in a room containing the
 project and the soul dir.
 
-## 10. What is deliberately NOT built
+## 11. What is deliberately NOT built
 
 - No auto-merge, ever. Evaluation and merge are human.
 - No cross-worktree agent messaging. Files are the shared state.
@@ -171,7 +189,7 @@ project and the soul dir.
   container.
 - No probe-runner machinery (retired; see ADR 0003 and archive/).
 
-## 11. Decision records
+## 12. Decision records
 
 | ADR | Decision |
 |---|---|
@@ -180,3 +198,5 @@ project and the soul dir.
 | 0003 | Protocol shrunk to surviving tooling |
 | 0004 | The blind core is jail + seam + file formats |
 | 0005 | Web channel cut to spawn contract (web lives on as the maintainer's personal attachment) |
+| 0006 | One gate, pluggable policy (implementation pending) |
+| 0007 | Plane 2 mechanism: sourced user flags file (implemented in pi-less-yolo `local` @ 0297b62) |
