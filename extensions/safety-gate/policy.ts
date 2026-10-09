@@ -133,6 +133,14 @@ export function checkMode(cmd: string, mode: Mode): Verdict {
   return { action: "allow" };
 }
 
+/** Mode-based tool restrictions beyond bash: file mutation is barred in PLAN. */
+export function checkToolMode(toolName: string, mode: Mode): Verdict {
+  if (mode === "PLAN" && (toolName === "write" || toolName === "edit")) {
+    return { action: "block", reason: "PLAN mode: read-only. Run /mode code to modify files." };
+  }
+  return { action: "allow" };
+}
+
 /** Full bash pipeline: absolute → rm analysis → conditional → mode. */
 export function evaluateBash(
   cmd: string,

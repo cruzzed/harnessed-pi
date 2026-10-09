@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as path from "node:path";
-import { evaluateBash, analyzeRmRf, checkAbsolute, checkMode } from "./policy.ts";
+import { evaluateBash, analyzeRmRf, checkAbsolute, checkMode, checkToolMode } from "./policy.ts";
 
 const CWD = "/work/project";
 const resolvePath = (from: string, to: string) =>
@@ -60,4 +60,13 @@ test("checkAbsolute and checkMode are independently callable", () => {
   assert.equal(checkAbsolute("echo hi").action, "allow");
   assert.equal(checkMode("anything", "YOLO").action, "allow");
   assert.equal(analyzeRmRf("ls", CWD, resolvePath).action, "allow");
+});
+
+test("checkToolMode: PLAN bars write/edit, other modes and tools untouched", () => {
+  assert.equal(checkToolMode("write", "PLAN").action, "block");
+  assert.equal(checkToolMode("edit", "PLAN").action, "block");
+  assert.equal(checkToolMode("write", "CODE").action, "allow");
+  assert.equal(checkToolMode("edit", "YOLO").action, "allow");
+  assert.equal(checkToolMode("read", "PLAN").action, "allow");
+  assert.equal(checkToolMode("bash", "PLAN").action, "allow"); // bash goes through checkMode
 });

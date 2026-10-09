@@ -13,7 +13,7 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import * as path from "node:path";
 import * as os from "node:os";
-import { evaluateBash, type Mode } from "./policy.ts";
+import { evaluateBash, checkToolMode, type Mode } from "./policy.ts";
 import * as writelock from "./writelock.ts";
 import * as vicinity from "./vicinity.ts";
 import * as permissions from "./permissions.ts";
@@ -151,6 +151,11 @@ export default function (pi: ExtensionAPI) {
         }
       }
     }
+
+    // PLAN mode bars file mutation, not just bash: write/edit would otherwise
+    // sail through the soft spec guard and the lock check untouched.
+    const toolVerdict = checkToolMode(event.toolName, mode);
+    if (toolVerdict.action === "block") return { block: true, reason: toolVerdict.reason };
 
     // Spec-file guard (soft): warn on edits, respect [FROZEN]
     if ((event.toolName === "write" || event.toolName === "edit") && mode !== "YOLO") {
